@@ -6,13 +6,19 @@ import Leaderboard from './components/Leaderboard'
 
 const TOTAL_ROUNDS = 10
 
-function censorTitle(lyrics, title) {
-  if (!lyrics || !title) return lyrics
+function splitLyrics(lyrics, title) {
+  if (!lyrics || !title) return [{ text: lyrics, censored: false }]
 
   const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const regex = new RegExp(escaped, 'gi')
+  const regex = new RegExp(`(${escaped})`, 'gi')
 
-  return lyrics.replace(regex, (match) => '█'.repeat(match.length))
+  return lyrics
+    .split(regex)
+    .filter((part) => part.length > 0)
+    .map((part) => ({
+      text: part,
+      censored: part.toLowerCase() === title.toLowerCase()
+    }))
 }
 
 function App() {
@@ -22,7 +28,7 @@ function App() {
 
   const [round, setRound] = useState(1)
   const [loading, setLoading] = useState(false)
-  const [lyrics, setLyrics] = useState('')
+  const [lyricsParts, setLyricsParts] = useState([])
   const [currentSong, setCurrentSong] = useState(null)
 
   const [artistGuess, setArtistGuess] = useState('')
@@ -53,10 +59,11 @@ function App() {
 
       const lyricsData = await response.json()
       const rawLyrics = lyricsData.lyrics || 'Lyrics not found.'
-      setLyrics(censorTitle(rawLyrics, song.title))
+      const snippet = rawLyrics.split('\n\n')[0]
+      setLyricsParts(splitLyrics(snippet, song.title))
     } catch (error) {
       console.error('Error fetching lyrics:', error)
-      setLyrics('Could not fetch lyrics.')
+      setLyricsParts([{ text: 'Could not fetch lyrics.', censored: false }])
     } finally {
       setLoading(false)
     }
@@ -203,7 +210,17 @@ function App() {
         ) : (
           <>
             <div className="lyrics-card">
-              <p className="lyrics">{lyrics.split('\n\n')[0]}</p>
+              <p className="lyrics">
+                {lyricsParts.map((part, i) =>
+                  part.censored ? (
+                    <span key={i} className="censored-word">
+                      {part.text}
+                    </span>
+                  ) : (
+                    <span key={i}>{part.text}</span>
+                  )
+                )}
+              </p>
             </div>
 
             <div className="controls">
