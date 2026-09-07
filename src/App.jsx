@@ -1,8 +1,12 @@
 import { useState } from 'react'
 import './App.css'
-import songs from './songs.json'
-import { saveScore } from './utils/leaderboard'
+import allSongs from './songs.json'
+import { saveScore, getPlayerName, savePlayerName } from './utils/leaderboard'
+import { getSongsForCategory, getCategoryLabel } from './categories'
 import Leaderboard from './components/Leaderboard'
+import LoginScreen from './components/LoginScreen'
+import CategoryScreen from './components/CategoryScreen'
+import AccountBadge from './components/AccountBadge'
 
 const TOTAL_ROUNDS = 10
 
@@ -57,9 +61,9 @@ function splitLyrics(lyrics, title) {
 }
 
 function App() {
-  const [playerName, setPlayerName] = useState('')
-  const [gameStarted, setGameStarted] = useState(false)
-  const [gameOver, setGameOver] = useState(false)
+  const [playerName, setPlayerName] = useState(getPlayerName())
+  const [screen, setScreen] = useState('login') // 'login' | 'category' | 'quiz' | 'gameover'
+  const [category, setCategory] = useState(null)
 
   const [round, setRound] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -74,14 +78,25 @@ function App() {
   const [wasCorrect, setWasCorrect] = useState(null)
   const [leaderboardKey, setLeaderboardKey] = useState(0)
 
-  const fetchLyrics = async () => {
+  const handleChangeName = (name) => {
+    setPlayerName(name)
+    savePlayerName(name)
+  }
+
+  const fetchLyrics = async (categoryId) => {
     setLoading(true)
     setMessage('')
     setArtistGuess('')
     setTitleGuess('')
 
     try {
-      const song = songs[Math.floor(Math.random() * songs.length)]
+      const pool = getSongsForCategory(allSongs, categoryId)
+
+      if (!pool || pool.length === 0) {
+        throw new Error('No songs available for this category')
+      }
+
+      const song = pool[Math.floor(Math.random() * pool.length)]
       setCurrentSong(song)
 
       const response = await fetch(
@@ -115,15 +130,18 @@ function App() {
     }
   }
 
-  const startGame = () => {
-    if (!playerName.trim()) return
+  const continueFromLogin = (name) => {
+    handleChangeName(name)
+    setScreen('category')
+  }
 
-    setGameStarted(true)
-    setGameOver(false)
+  const startGame = (categoryId) => {
+    setCategory(categoryId)
     setRound(1)
     setPoints(0)
+    setScreen('quiz')
 
-    fetchLyrics()
+    fetchLyrics(categoryId)
   }
 
   const handleGuess = () => {
@@ -146,9 +164,7 @@ function App() {
     } else if (correctArtist || correctTitle) {
       newPoints = points + 50
       setMessage(
-        `Close! You got the ${
-          correctArtist ? 'artist' : 'title'
-        } right. +50 points`
+        `Almost right! The answer was "${currentSong.title}" by ${currentSong.artist}. +50 points`
       )
       setWasCorrect('partial')
     } else {
@@ -164,80 +180,58 @@ function App() {
   }
 
   const handleSkip = () => {
+    if (currentSong) {
+      setMessage(
+        `Skipped! The answer was "${currentSong.title}" by ${currentSong.artist}.`
+      )
+      setWasCorrect('skip')
+    }
     advanceRound(points)
   }
 
   const advanceRound = (currentPoints) => {
     if (round >= TOTAL_ROUNDS) {
-      saveScore(playerName, currentPoints)
+      saveScore(playerName, currentPoints, category)
       setLeaderboardKey((k) => k + 1)
-      setGameOver(true)
+      setScreen('gameover')
       return
     }
 
     setTimeout(() => {
       setRound((r) => r + 1)
-      fetchLyrics()
+      fetchLyrics(category)
     }, 1500)
   }
 
   const playAgain = () => {
-    setGameStarted(false)
-    setGameOver(false)
-    setPlayerName('')
+    setScreen('category')
   }
 
-  // -------- Start screen --------
-  if (!gameStarted) {
+  // -------- Login screen --------
+  if (screen === 'login') {
+    return <LoginScreen initialName={playerName} onContinue={continueFromLogin} />
+  }
+
+  // -------- Category screen --------
+  if (screen === 'category') {
     return (
-      <div className="app">
-        <div className="start-screen">
-          <span className="logo">🎤</span>
-
-          <h1>Lyrics Quiz</h1>
-
-          <p className="subtitle">
-            Guess the song from the lyrics. 10 rounds. No mercy.
-          </p>
-
-          <div className="input-wrapper">
-            <input
-              type="text"
-              placeholder="Your name"
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && startGame()}
-            />
-
-            {playerName && (
-              <button
-                className="clear"
-                onClick={() => setPlayerName('')}
-                aria-label="Clear"
-              >
-                ×
-              </button>
-            )}
-          </div>
-
-          <button
-            className="start-button"
-            onClick={startGame}
-            disabled={!playerName.trim()}
-          >
-            Start game
-          </button>
-        </div>
-
-        <Leaderboard refreshKey={leaderboardKey} />
-      </div>
+      <CategoryScreen
+        playerName={playerName}
+        onChangeName={handleChangeName}
+        leaderboardKey={leaderboardKey}
+        onStart={startGame}
+      />
     )
   }
 
   // -------- Game over screen --------
-  if (gameOver) {
+  if (screen === 'gameover') {
     return (
       <div className="app">
+        <div className="top-bar">
+          <AccountBadge playerName={playerName} onChangeName={handleChangeName} />
+        </div>
+
         <div className="game-over">
           <span className="game-over-emoji">
             {points >= 500 ? '🏆' : '🎵'}
@@ -246,7 +240,7 @@ function App() {
           <h1>Game over!</h1>
 
           <span className="final-score-label">
-            {playerName}'s score
+            {playerName}'s score · {getCategoryLabel(category)}
           </span>
 
           <p className="final-score">{points}</p>
@@ -259,7 +253,7 @@ function App() {
           </button>
         </div>
 
-        <Leaderboard refreshKey={leaderboardKey} />
+        <Leaderboard category={category} refreshKey={leaderboardKey} />
       </div>
     )
   }
@@ -267,6 +261,10 @@ function App() {
   // -------- Quiz screen --------
   return (
     <div className="app">
+      <div className="top-bar">
+        <AccountBadge playerName={playerName} onChangeName={handleChangeName} />
+      </div>
+
       <div className="header">
         <h1>Lyrics Quiz</h1>
 
@@ -383,7 +381,9 @@ function App() {
                     ? 'correct'
                     : wasCorrect === 'partial'
                       ? 'partial'
-                      : 'wrong'
+                      : wasCorrect === 'skip'
+                        ? 'skip'
+                        : 'wrong'
                 }`}
               >
                 {message}
