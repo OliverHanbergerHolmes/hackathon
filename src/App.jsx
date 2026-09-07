@@ -1,8 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './App.css'
 import songs from './songs.json'
+import { saveScore } from './utils/leaderboard'
+import Leaderboard from './components/Leaderboard'
+
+const TOTAL_ROUNDS = 10
 
 function App() {
+  const [playerName, setPlayerName] = useState('')
+  const [gameStarted, setGameStarted] = useState(false)
+  const [gameOver, setGameOver] = useState(false)
+
+  const [round, setRound] = useState(1)
   const [loading, setLoading] = useState(false)
   const [lyrics, setLyrics] = useState('')
   const [currentSong, setCurrentSong] = useState(null)
@@ -12,6 +21,7 @@ function App() {
 
   const [points, setPoints] = useState(0)
   const [message, setMessage] = useState('')
+  const [leaderboardKey, setLeaderboardKey] = useState(0)
 
   const fetchLyrics = async () => {
     setLoading(true)
@@ -19,7 +29,7 @@ function App() {
     setArtistGuess('')
     setTitleGuess('')
 
-    try {x
+    try {
       const song = songs[Math.floor(Math.random() * songs.length)]
       setCurrentSong(song)
 
@@ -32,7 +42,6 @@ function App() {
       }
 
       const lyricsData = await response.json()
-
       setLyrics(lyricsData.lyrics || 'Lyrics not found.')
     } catch (error) {
       console.error('Error fetching lyrics:', error)
@@ -42,141 +51,122 @@ function App() {
     }
   }
 
-  useEffect(() => {
+  const startGame = () => {
+    if (!playerName.trim()) return
+    setGameStarted(true)
+    setGameOver(false)
+    setRound(1)
+    setPoints(0)
     fetchLyrics()
-  }, [])
+  }
 
   const handleGuess = () => {
     if (!currentSong) return
 
     const correctArtist =
-      artistGuess.trim().toLowerCase() ===
-      currentSong.artist.trim().toLowerCase()
-
+      artistGuess.trim().toLowerCase() === currentSong.artist.trim().toLowerCase()
     const correctTitle =
-      titleGuess.trim().toLowerCase() ===
-      currentSong.title.trim().toLowerCase()
+      titleGuess.trim().toLowerCase() === currentSong.title.trim().toLowerCase()
 
+    let newPoints = points
     if (correctArtist && correctTitle) {
-      setPoints((prev) => prev + 100)
-      setMessage('Correct! +100 🎉')
+      newPoints = points + 100
+      setMessage('Correct! +100 points 🎉')
     } else {
-      setPoints((prev) => prev - 50)
+      newPoints = points - 50
       setMessage(
-        `Wrong! It was "${currentSong.title}" by ${currentSong.artist} · -50`
+        `Wrong! The song was "${currentSong.title}" by ${currentSong.artist}. -50 points`
       )
+    }
+    setPoints(newPoints)
+
+    advanceRound(newPoints)
+  }
+
+  const handleSkip = () => {
+    advanceRound(points)
+  }
+
+  const advanceRound = (currentPoints) => {
+    if (round >= TOTAL_ROUNDS) {
+      saveScore(playerName, currentPoints)
+      setLeaderboardKey((k) => k + 1)
+      setGameOver(true)
+      return
     }
 
     setTimeout(() => {
+      setRound((r) => r + 1)
       fetchLyrics()
     }, 1500)
   }
 
-  const handleSkip = () => {
-    fetchLyrics()
+  const playAgain = () => {
+    setGameStarted(false)
+    setGameOver(false)
+    setPlayerName('')
+  }
+
+  if (!gameStarted) {
+    return (
+      <div className="App">
+        <h1>Lyrics Quiz</h1>
+        <input
+          type="text"
+          placeholder="Your name"
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
+        />
+        <button onClick={startGame}>Start game</button>
+        <Leaderboard refreshKey={leaderboardKey} />
+      </div>
+    )
+  }
+
+  if (gameOver) {
+    return (
+      <div className="App">
+        <h1>Game over!</h1>
+        <h2>{playerName} scored {points} points</h2>
+        <button onClick={playAgain}>Play again</button>
+        <Leaderboard refreshKey={leaderboardKey} />
+      </div>
+    )
   }
 
   return (
-    <main className="app">
-      <header className="header">
-        <h1>Lyrics Quiz</h1>
+    <div className="App">
+      <h1>Lyrics Quiz</h1>
+      <h2>Round {round}/{TOTAL_ROUNDS}</h2>
+      <h2>Points: {points}</h2>
 
-        <div className="score">
-          <span>Score</span>
-          <strong>{points}</strong>
-        </div>
-      </header>
+      {loading ? (
+        <p>Loading lyrics...</p>
+      ) : (
+        <>
+          <pre>{lyrics.split('\n\n')[0]}</pre>
 
-      <section className="quiz">
-        <div className="lyrics-card">
-          {loading ? (
-            <div className="loading">
-              <span className="spinner" />
-              <p>Loading lyrics...</p>
-            </div>
-          ) : (
-            <p className="lyrics">{lyrics.split('\n\n')[0]}</p>
-          )}
-        </div>
-
-        {!loading && (
-          <div className="controls">
-            <div className="inputs">
-              <div className="input-group">
-                <label htmlFor="artist">Artist</label>
-
-                <div className="input-wrapper">
-                  <input
-                    id="artist"
-                    type="text"
-                    placeholder="Who sings it?"
-                    value={artistGuess}
-                    onChange={(e) => setArtistGuess(e.target.value)}
-                    autoComplete="off"
-                  />
-
-                  {artistGuess && (
-                    <button
-                      className="clear"
-                      type="button"
-                      onClick={() => setArtistGuess('')}
-                      aria-label="Clear artist"
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div className="input-group">
-                <label htmlFor="title">Song title</label>
-
-                <div className="input-wrapper">
-                  <input
-                    id="title"
-                    type="text"
-                    placeholder="What's the song?"
-                    value={titleGuess}
-                    onChange={(e) => setTitleGuess(e.target.value)}
-                    autoComplete="off"
-                  />
-
-                  {titleGuess && (
-                    <button
-                      className="clear"
-                      type="button"
-                      onClick={() => setTitleGuess('')}
-                      aria-label="Clear song title"
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <button className="guess-button" onClick={handleGuess}>
-              Guess
-              <span>+100 / −50</span>
-            </button>
-
-            <button className="skip-button" onClick={handleSkip}>
-              Skip
-            </button>
-
-            {message && (
-              <div
-                className={`message ${
-                  message.startsWith('Correct') ? 'correct' : 'wrong'
-                }`}
-              >
-                {message}
-              </div>
-            )}
+          <div className="guess-container">
+            <input
+              type="text"
+              placeholder="Artist"
+              value={artistGuess}
+              onChange={(e) => setArtistGuess(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Song title"
+              value={titleGuess}
+              onChange={(e) => setTitleGuess(e.target.value)}
+            />
+            <button onClick={handleGuess}>Guess</button>
+            <button onClick={handleSkip}>Skip</button>
           </div>
-        )}
-      </section>
-    </main>
+
+          {message && <p>{message}</p>}
+        </>
+      )}
+    </div>
   )
 }
 
