@@ -139,6 +139,12 @@ button {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+.censored-word {
+  display: inline-block;
+  filter: blur(6px);
+  user-select: none;
+  color: #22c55e;
+}
 
 /* --------------------
    Controls
@@ -413,4 +419,206 @@ button {
   .lyrics {
     font-size: 23px;
   }
+}
+
+/* --------------------
+   Score row
+-------------------- */
+
+.score-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* --------------------
+   Start screen
+-------------------- */
+
+.start-screen {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.logo {
+  font-size: 52px;
+  line-height: 1;
+}
+
+.subtitle {
+  margin: -10px 0 4px;
+  color: #999999;
+  font-size: 15px;
+  text-align: center;
+}
+
+.start-button {
+  width: 100%;
+  min-height: 62px;
+  border: 0;
+  border-radius: 17px;
+  background: #22c55e;
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #15803d;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.start-button:disabled {
+  background: #333333;
+  box-shadow: 0 4px 0 #1a1a1a;
+  color: #777777;
+  cursor: not-allowed;
+}
+
+.start-button:not(:disabled):active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 #15803d;
+}
+
+/* --------------------
+   Game over
+-------------------- */
+
+.game-over {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.game-over-emoji {
+  font-size: 46px;
+  margin-bottom: 4px;
+}
+
+.final-score-label {
+  color: #999999;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.final-score {
+  font-size: 46px;
+  font-weight: 800;
+  color: #22c55e;
+  margin: 0 0 10px;
+}
+
+.play-again-button {
+  width: 100%;
+  min-height: 58px;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.play-again-button:active {
+  transform: scale(0.97);
+}
+
+/* --------------------
+   Leaderboard
+-------------------- */
+
+.leaderboard-card {
+  width: 100%;
+  margin-top: 28px;
+  padding: 20px;
+  border-radius: 20px;
+  background: #1d1d1d;
+  border: 1px solid #292929;
+}
+
+.leaderboard-card h2 {
+  margin: 0 0 14px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #999999;
+  text-align: center;
+}
+
+.leaderboard-empty {
+  margin: 0;
+  color: #777777;
+  font-size: 14px;
+  text-align: center;
+}
+
+.leaderboard-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leaderboard-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #222222;
+}
+
+.leaderboard-rank {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #333333;
+  color: #cccccc;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.leaderboard-list li:nth-child(1) .leaderboard-rank {
+  background: #f5b301;
+  color: #111111;
+}
+
+.leaderboard-list li:nth-child(2) .leaderboard-rank {
+  background: #c0c0c0;
+  color: #111111;
+}
+
+.leaderboard-list li:nth-child(3) .leaderboard-rank {
+  background: #cd7f32;
+  color: #111111;
+}
+
+.leaderboard-name {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-points {
+  font-size: 15px;
+  font-weight: 800;
+  color: #22c55e;
 }

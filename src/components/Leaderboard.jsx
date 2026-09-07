@@ -1,23 +1,25 @@
-// src/components/Leaderboard.jsx
 import { getTopScores } from "../utils/leaderboard";
 
 function Leaderboard({ refreshKey }) {
   const topScores = getTopScores(10);
 
-  if (topScores.length === 0) {
-    return <p>Ingen har spelat än — bli den första på listan!</p>;
-  }
-
   return (
-    <div>
+    <div className="leaderboard-card">
       <h2>Leaderboard</h2>
-      <ol>
-        {topScores.map((entry, index) => (
-          <li key={index}>
-            {entry.name} — {entry.score} pts
-          </li>
-        ))}
-      </ol>
+
+      {topScores.length === 0 ? (
+        <p className="leaderboard-empty">No games played yet — be the first!</p>
+      ) : (
+        <ol className="leaderboard-list">
+          {topScores.map((entry, index) => (
+            <li key={index}>
+              <span className="leaderboard-rank">{index + 1}</span>
+              <span className="leaderboard-name">{entry.name}</span>
+              <span className="leaderboard-points">{entry.score} pts</span>
+            </li>
+          ))}
+        </ol>
+      )}
     </div>
   );
 }
