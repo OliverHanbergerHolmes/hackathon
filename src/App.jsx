@@ -19,7 +19,7 @@ function App() {
     setArtistGuess('')
     setTitleGuess('')
 
-    try {
+    try {x
       const song = songs[Math.floor(Math.random() * songs.length)]
       setCurrentSong(song)
 

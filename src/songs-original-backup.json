@@ -30,6 +30,11 @@
         "year": 1970
     },
     {
+        "artist": "Queen",
+        "title": "Don't Stop Me Now",
+        "year": 1978
+    },
+    {
         "artist": "Michael Jackson",
         "title": "Thriller",
         "year": 1982
@@ -115,6 +120,11 @@
         "year": 1987
     },
     {
+        "artist": "R.E.M.",
+        "title": "Losing My Religion",
+        "year": 1991
+    },
+    {
         "artist": "Radiohead",
         "title": "Creep",
         "year": 1992
@@ -185,6 +195,11 @@
         "year": 2019
     },
     {
+        "artist": "Dua Lipa",
+        "title": "Don't Start Now",
+        "year": 2019
+    },
+    {
         "artist": "Taylor Swift",
         "title": "Shake It Off",
         "year": 2014
@@ -205,6 +220,11 @@
         "year": 2013
     },
     {
+        "artist": "Journey",
+        "title": "Don't Stop Believin'",
+        "year": 1981
+    },
+    {
         "artist": "AC/DC",
         "title": "Back in Black",
         "year": 1980
@@ -213,6 +233,11 @@
         "artist": "Metallica",
         "title": "Enter Sandman",
         "year": 1991
+    },
+    {
+        "artist": "Aerosmith",
+        "title": "I Don't Want to Miss a Thing",
+        "year": 1998
     },
     {
         "artist": "Green Day",
@@ -325,6 +350,11 @@
         "year": 1970
     },
     {
+        "artist": "Stevie Wonder",
+        "title": "Isn't She Lovely",
+        "year": 1976
+    },
+    {
         "artist": "Bob Marley",
         "title": "Three Little Birds",
         "year": 1977
@@ -365,6 +395,11 @@
         "year": 1987
     },
     {
+        "artist": "Bon Jovi",
+        "title": "It's My Life",
+        "year": 2000
+    },
+    {
         "artist": "U2",
         "title": "One",
         "year": 1991
@@ -375,6 +410,11 @@
         "year": 1983
     },
     {
+        "artist": "R.E.M.",
+        "title": "Man on the Moon",
+        "year": 1992
+    },
+    {
         "artist": "Radiohead",
         "title": "Karma Police",
         "year": 1997
@@ -382,6 +422,16 @@
     {
         "artist": "Radiohead",
         "title": "No Surprises",
+        "year": 1997
+    },
+    {
+        "artist": "Oasis",
+        "title": "Don't Look Back in Anger",
+        "year": 1995
+    },
+    {
+        "artist": "Backstreet Boys",
+        "title": "Everybody (Backstreet's Back)",
         "year": 1997
     },
     {
@@ -440,6 +490,11 @@
         "year": 2008
     },
     {
+        "artist": "Lady Gaga",
+        "title": "Shallow",
+        "year": 2018
+    },
+    {
         "artist": "Katy Perry",
         "title": "Roar",
         "year": 2013
@@ -473,6 +528,11 @@
         "artist": "The Weeknd",
         "title": "Starboy",
         "year": 2016
+    },
+    {
+        "artist": "The Weeknd",
+        "title": "Can't Feel My Face",
+        "year": 2015
     },
     {
         "artist": "Billie Eilish",
@@ -590,6 +650,11 @@
         "year": 1979
     },
     {
+        "artist": "The Who",
+        "title": "Baba O'Riley",
+        "year": 1971
+    },
+    {
         "artist": "The Doors",
         "title": "Light My Fire",
         "year": 1967
@@ -598,6 +663,16 @@
         "artist": "The Doors",
         "title": "Riders on the Storm",
         "year": 1971
+    },
+    {
+        "artist": "Simon & Garfunkel",
+        "title": "The Sound of Silence",
+        "year": 1964
+    },
+    {
+        "artist": "Simon & Garfunkel",
+        "title": "Bridge Over Troubled Water",
+        "year": 1970
     },
     {
         "artist": "Bob Dylan",
@@ -648,6 +723,11 @@
         "artist": "Europe",
         "title": "The Final Countdown",
         "year": 1986
+    },
+    {
+        "artist": "a-ha",
+        "title": "Take on Me",
+        "year": 1985
     },
     {
         "artist": "Cyndi Lauper",
@@ -730,6 +810,11 @@
         "year": 1984
     },
     {
+        "artist": "REO Speedwagon",
+        "title": "Can't Fight This Feeling",
+        "year": 1984
+    },
+    {
         "artist": "Kansas",
         "title": "Carry On Wayward Son",
         "year": 1976
@@ -738,6 +823,11 @@
         "artist": "Steve Winwood",
         "title": "Higher Love",
         "year": 1986
+    },
+    {
+        "artist": "Tina Turner",
+        "title": "What's Love Got to Do with It",
+        "year": 1984
     },
     {
         "artist": "Cher",
@@ -750,8 +840,18 @@
         "year": 1995
     },
     {
+        "artist": "No Doubt",
+        "title": "Don't Speak",
+        "year": 1996
+    },
+    {
         "artist": "TLC",
         "title": "No Scrubs",
+        "year": 1999
+    },
+    {
+        "artist": "Destiny's Child",
+        "title": "Say My Name",
         "year": 1999
     },
     {
@@ -798,6 +898,11 @@
         "artist": "Red Hot Chili Peppers",
         "title": "Californication",
         "year": 1999
+    },
+    {
+        "artist": "Red Hot Chili Peppers",
+        "title": "Can't Stop",
+        "year": 2002
     },
     {
         "artist": "Pearl Jam",
@@ -875,6 +980,11 @@
         "year": 2005
     },
     {
+        "artist": "Fall Out Boy",
+        "title": "Sugar, We're Goin Down",
+        "year": 2005
+    },
+    {
         "artist": "Paramore",
         "title": "Misery Business",
         "year": 2007
@@ -900,9 +1010,19 @@
         "year": 1999
     },
     {
+        "artist": "Matchbox Twenty",
+        "title": "3AM",
+        "year": 1996
+    },
+    {
         "artist": "Goo Goo Dolls",
         "title": "Iris",
         "year": 1998
+    },
+    {
+        "artist": "Third Eye Blind",
+        "title": "Semi-Charmed Life",
+        "year": 1997
     },
     {
         "artist": "Smash Mouth",
@@ -933,6 +1053,11 @@
         "artist": "Counting Crows",
         "title": "Mr. Jones",
         "year": 1993
+    },
+    {
+        "artist": "Hootie & the Blowfish",
+        "title": "Only Wanna Be with You",
+        "year": 1994
     },
     {
         "artist": "Blues Traveler",
@@ -968,6 +1093,11 @@
         "artist": "OutKast",
         "title": "Hey Ya!",
         "year": 2003
+    },
+    {
+        "artist": "Usher",
+        "title": "Yeah!",
+        "year": 2004
     },
     {
         "artist": "Black Eyed Peas",
@@ -1085,9 +1215,19 @@
         "year": 2015
     },
     {
+        "artist": "Zayn",
+        "title": "Pillowtalk",
+        "year": 2016
+    },
+    {
         "artist": "Drake",
         "title": "One Dance",
         "year": 2016
+    },
+    {
+        "artist": "Drake",
+        "title": "God's Plan",
+        "year": 2018
     },
     {
         "artist": "Drake",
