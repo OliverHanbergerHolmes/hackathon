@@ -50,18 +50,20 @@ function App() {
     if (!currentSong) return
 
     const correctArtist =
-      artistGuess.trim().toLowerCase() === currentSong.artist.trim().toLowerCase()
+      artistGuess.trim().toLowerCase() ===
+      currentSong.artist.trim().toLowerCase()
 
     const correctTitle =
-      titleGuess.trim().toLowerCase() === currentSong.title.trim().toLowerCase()
+      titleGuess.trim().toLowerCase() ===
+      currentSong.title.trim().toLowerCase()
 
     if (correctArtist && correctTitle) {
-      setPoints(points + 100)
-      setMessage('Correct! +100 points 🎉')
+      setPoints((prev) => prev + 100)
+      setMessage('Correct! +100 🎉')
     } else {
-      setPoints(points - 50)
+      setPoints((prev) => prev - 50)
       setMessage(
-        `Wrong! The song was "${currentSong.title}" by ${currentSong.artist}. -50 points`
+        `Wrong! It was "${currentSong.title}" by ${currentSong.artist} · -50`
       )
     }
 
@@ -75,45 +77,106 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <h1>Lyrics Quiz</h1>
+    <main className="app">
+      <header className="header">
+        <h1>Lyrics Quiz</h1>
 
-      <h2>Points: {points}</h2>
+        <div className="score">
+          <span>Score</span>
+          <strong>{points}</strong>
+        </div>
+      </header>
 
-      {loading ? (
-        <p>Loading lyrics...</p>
-      ) : (
-        <>
-          <pre>{lyrics.split('\n\n')[0]}</pre>
+      <section className="quiz">
+        <div className="lyrics-card">
+          {loading ? (
+            <div className="loading">
+              <span className="spinner" />
+              <p>Loading lyrics...</p>
+            </div>
+          ) : (
+            <p className="lyrics">{lyrics.split('\n\n')[0]}</p>
+          )}
+        </div>
 
-          <div className="guess-container">
-            <input
-              type="text"
-              placeholder="Artist"
-              value={artistGuess}
-              onChange={(e) => setArtistGuess(e.target.value)}
-            />
+        {!loading && (
+          <div className="controls">
+            <div className="inputs">
+              <div className="input-group">
+                <label htmlFor="artist">Artist</label>
 
-            <input
-              type="text"
-              placeholder="Song title"
-              value={titleGuess}
-              onChange={(e) => setTitleGuess(e.target.value)}
-            />
+                <div className="input-wrapper">
+                  <input
+                    id="artist"
+                    type="text"
+                    placeholder="Who sings it?"
+                    value={artistGuess}
+                    onChange={(e) => setArtistGuess(e.target.value)}
+                    autoComplete="off"
+                  />
 
-            <button onClick={handleGuess}>
+                  {artistGuess && (
+                    <button
+                      className="clear"
+                      type="button"
+                      onClick={() => setArtistGuess('')}
+                      aria-label="Clear artist"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label htmlFor="title">Song title</label>
+
+                <div className="input-wrapper">
+                  <input
+                    id="title"
+                    type="text"
+                    placeholder="What's the song?"
+                    value={titleGuess}
+                    onChange={(e) => setTitleGuess(e.target.value)}
+                    autoComplete="off"
+                  />
+
+                  {titleGuess && (
+                    <button
+                      className="clear"
+                      type="button"
+                      onClick={() => setTitleGuess('')}
+                      aria-label="Clear song title"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <button className="guess-button" onClick={handleGuess}>
               Guess
+              <span>+100 / −50</span>
             </button>
 
-            <button onClick={handleSkip}>
+            <button className="skip-button" onClick={handleSkip}>
               Skip
             </button>
-          </div>
 
-          {message && <p>{message}</p>}
-        </>
-      )}
-    </div>
+            {message && (
+              <div
+                className={`message ${
+                  message.startsWith('Correct') ? 'correct' : 'wrong'
+                }`}
+              >
+                {message}
+              </div>
+            )}
+          </div>
+        )}
+      </section>
+    </main>
   )
 }
 
